@@ -1,0 +1,116 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.akhikhl.gretty:gretty:+'
+    }
+}
+/**
+ * gives a version to the JAR file
+ */
+version '1.0-SNAPSHOT'
+
+apply plugin: 'idea'
+
+apply plugin: "java"
+
+/*  allows us to compile and assemble a WAR (Web Application Archive)
+ *  file from our Java Web Application.
+ */
+apply plugin: 'war'
+apply plugin: 'org.akhikhl.gretty'
+
+gretty {
+    port = 8899
+    contextPath = '/'
+    servletContainer = 'jetty9'
+}
+
+apply plugin: 'checkstyle'
+
+/**
+ * FindBugs uses static analysis to inspect Java bytecode
+ * for occurrences of bug patterns.
+ */
+apply plugin: 'findbugs'
+
+/**
+ * PMD is a source code analyzer. It finds common programming flaws like
+ * unused variables, empty catch blocks, unnecessary object creation,
+ * and so forth.
+ * Additionally it includes CPD, the copy-paste-detector.
+ * CPD finds duplicated code.
+ */
+apply plugin: 'pmd'
+
+repositories {
+    mavenCentral()
+}
+
+checkstyle {
+    configFile = new File(rootDir, "src/main/java/config/checkstyle/checkstyle.xml")
+    showViolations = true
+    ignoreFailures = true
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        html.destination rootProject.file("build/reports/checkstyle.html")
+    }
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        html.enabled = true
+        xml.enabled = false
+    }
+}
+
+dependencies {
+
+    compile 'org.springframework:spring-context:4.2.5.RELEASE'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.2'
+    compile 'org.springframework:spring-webmvc:4.2.5.RELEASE'
+    compile('javax.servlet:jstl:1.2')
+
+/**
+ *    The ‘providedCompile’ line means don’t include this jar
+ *    in the WEB-INF/lib directory, since Tomcat7 will already have this. The rest will be placed in that directory.
+ */
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile 'org.springframework:spring-test:4.2.5.RELEASE'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+
+}
+
+/** GRADLE DEMO */
+
+/**
+ * Custom tasks example
+ * A task is an object and has API
+ * A task also has list of activities
+ * A Gradle build is a program
+ */
+//
+//task hello
+//task noPoint
+//
+///**
+// * run gradlew -q hello
+// */
+//
+//noPoint {
+//    doLast {
+//        println("this task is pointless but.... ")
+//    }
+//}
+//
+//hello {
+//    dependsOn << noPoint
+//    doLast {
+//        println "hi there"
+//    }
+//}
