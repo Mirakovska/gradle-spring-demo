@@ -44,8 +44,20 @@ apply plugin: 'findbugs'
  */
 apply plugin: 'pmd'
 
+/**
+ * provides code coverage metrics for Java code
+ */
+apply plugin: "jacoco"
+
 repositories {
     mavenCentral()
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+    }
 }
 
 checkstyle {
@@ -80,7 +92,7 @@ dependencies {
  */
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
 
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile 'junit:junit:4.12'
     testCompile 'org.springframework:spring-test:4.2.5.RELEASE'
     testCompile 'org.mockito:mockito-core:1.10.19'
 
